@@ -1,9 +1,10 @@
 import React from 'react';
+import {starWarsInfo} from "../utils/constants.js";
 
 const StarWars = () => {
     return (
-        <div>
-            Star Wars
+        <div className="farGalaxy">
+            {starWarsInfo}
         </div>
     );
 };
