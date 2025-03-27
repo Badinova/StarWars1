@@ -1,11 +1,13 @@
 import Home from "./Home.jsx";
 import StarWars from "./StarWars.jsx";
 import Contact from "./Contact.jsx";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import {navItems} from "../utils/constants.js";
 import AboutMe from "./AboutMe.jsx";
+import {SWContexr} from "../utils/context.js";
 
-const Main = ({page}) => {
+const Main = () => {
+    const {page} = useContext(SWContexr);
 
 
     switch (page) {
