@@ -5,17 +5,33 @@ import {base_url} from "../utils/constants.js";
 const Contact = () => {
     const [planets, setPlanets] = useState(['Loading...'])
 
-    async function fetchPlanets() {
-        const response = await fetch(`${base_url}/v1/planets`);
-        const data = await response.json();
-        const planets = data.map((item) => item.name);
-        setPlanets(planets);
-
-    }
-
     useEffect(() => {
-        fetchPlanets();
-        return() => console.log('Component Contact was unmounted');
+        const storedPlanets = localStorage.getItem("starWarsPlanets");
+        const expirationTime = 30 * 24 * 60 * 60 * 1000;
+
+        if (storedPlanets) {
+            const { data, timestamp } = JSON.parse(storedPlanets);
+            if (Date.now() - timestamp <= expirationTime) {
+                setPlanets(data);
+                return;
+            }
+        }
+
+        fetch(`${base_url}/v1/planets`)
+            .then(response => {
+                if (!response.ok) throw new Error("Failed to fetch planets");
+                return response.json();
+            })
+            .then(data => {
+                const planetNames = data.map(item => item.name);
+                setPlanets(planetNames);
+                localStorage.setItem("starWarsPlanets", JSON.stringify({ data: planetNames, timestamp: Date.now() }));
+            })
+            .catch(error => {
+                console.error("Error loading planets:", error);
+                setPlanets(["Error loading"]);
+            });
+
     }, []);
 
     return (
